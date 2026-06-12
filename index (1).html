@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dossier Client — Marchica Emballage</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #1B6B3A;
+  --green-mid: #2E8B57;
+  --green-light: #E8F5EE;
+  --green-border: #A8D5B5;
+  --gold: #C8960C;
+  --gold-light: #FDF6E3;
+  --red: #C0392B;
+  --gray-50: #F7F9F7;
+  --gray-100: #EEF2EE;
+  --gray-200: #D8E2D8;
+  --gray-400: #8FA98F;
+  --gray-600: #4A6A4A;
+  --gray-800: #1E3A1E;
+  --white: #FFFFFF;
+  --shadow: 0 2px 12px rgba(27,107,58,0.08);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--gray-50);color:var(--gray-800);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* HEADER */
+.app-header{background:var(--green);color:white;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(27,107,58,0.25)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.brand-name{font-size:16px;font-weight:600;letter-spacing:0.01em}
+.brand-tagline{font-size:11px;opacity:0.65;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:12px}
+.badge-confidential{font-size:10px;font-weight:600;letter-spacing:0.08em;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:3px 10px;border-radius:20px;text-transform:uppercase}
+.badge-sarl{font-size:10px;color:rgba(255,255,255,0.7);border-left:1px solid rgba(255,255,255,0.2);padding-left:12px}
+
+/* LAYOUT */
+.app-body{display:flex;min-height:calc(100vh - 60px)}
+.sidebar{width:230px;min-width:230px;background:var(--white);border-right:1px solid var(--gray-200);padding:1.5rem 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+.sidebar-section{padding:0 1rem;margin-bottom:1.5rem}
+.sidebar-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-400);padding:0 0.5rem;margin-bottom:0.5rem;display:block}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;font-size:13px;color:var(--gray-600);border-left:3px solid transparent;border-radius:0 6px 6px 0;transition:all 0.15s;margin-bottom:2px;user-select:none}
+.nav-item:hover{background:var(--green-light);color:var(--green)}
+.nav-item.active{background:var(--green-light);color:var(--green);border-left-color:var(--green-mid);font-weight:500}
+.nav-num{width:20px;height:20px;background:var(--gray-100);border-radius:50%;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gray-600)}
+.nav-item.active .nav-num{background:var(--green-mid);color:white}
+.nav-item.done .nav-num{background:var(--green);color:white}
+.sidebar-info{margin:0 1rem;padding:12px;background:var(--green-light);border:1px solid var(--green-border);border-radius:8px}
+.sidebar-info p{font-size:11px;color:var(--green);line-height:1.6}
+.sidebar-info strong{display:block;font-size:12px;margin-bottom:4px;color:var(--green)}
+.progress-wrap{padding:1rem;margin-top:auto;border-top:1px solid var(--gray-100)}
+.progress-label{font-size:11px;color:var(--gray-400);margin-bottom:6px;display:flex;justify-content:space-between}
+.progress-bar{height:5px;background:var(--gray-200);border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green-mid),var(--green));border-radius:5px;transition:width 0.4s ease}
+
+/* MAIN */
+.main{flex:1;padding:1.5rem 2rem;max-width:860px}
+.section{display:none}
+.section.active{display:block}
+
+/* META BAR */
+.meta-bar{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:1rem 1.25rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1.25rem}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:2px solid var(--green-light)}
+.card-icon{width:40px;height:40px;background:var(--green-light);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-title{font-size:16px;font-weight:600;color:var(--green)}
+.card-sub{font-size:12px;color:var(--gray-400);margin-top:2px}
+
+/* FORMS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px 20px}
+.grid-1{display:grid;grid-template-columns:1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:4px}
+.field label{font-size:12px;font-weight:500;color:var(--gray-600)}
+.req{color:var(--red);margin-left:2px}
+input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],select,textarea{border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:8px 11px;font-size:13px;font-family:inherit;color:var(--gray-800);background:var(--white);transition:border-color 0.15s,box-shadow 0.15s;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--green-mid);box-shadow:0 0 0 3px rgba(46,139,87,0.12)}
+input::placeholder,textarea::placeholder{color:var(--gray-400)}
+textarea{resize:vertical;min-height:80px}
+.spacer{height:14px}
+
+/* RADIO / CHECKBOX */
+.radio-group,.check-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.radio-option,.check-option{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:6px 12px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);transition:all 0.15s;font-family:inherit}
+.radio-option:hover,.check-option:hover{border-color:var(--green-mid);background:var(--green-light)}
+.radio-option input,.check-option input{accent-color:var(--green-mid)}
+
+/* PRODUITS CHIPS */
+.produits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-bottom:1rem}
+.produit-chip{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--gray-600);background:var(--white);transition:all 0.15s;user-select:none}
+.produit-chip:hover{border-color:var(--green-mid);color:var(--green)}
+.produit-chip.selected{border-color:var(--green-mid);background:var(--green-light);color:var(--green);font-weight:500}
+.produit-chip .chip-icon{font-size:16px}
+
+/* SERVICES CHIPS */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:1rem}
+.service-chip{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--gray-600);background:var(--white);transition:all 0.15s;user-select:none}
+.service-chip:hover{border-color:var(--green-mid);color:var(--green)}
+.service-chip.selected{border-color:var(--green-mid);background:var(--green-light);color:var(--green);font-weight:500}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{padding:9px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--gray-400);background:var(--gray-50);border-bottom:1px solid var(--gray-200)}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--gray-50)}
+.data-table input[type=checkbox]{width:16px;height:16px;accent-color:var(--green);cursor:pointer}
+
+/* COMMANDE TABLE */
+.cmd-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.cmd-table th{padding:8px 10px;text-align:left;font-size:11px;font-weight:600;color:var(--gray-400);background:var(--gray-50);border-bottom:1px solid var(--gray-200);text-transform:uppercase;letter-spacing:0.04em}
+.cmd-table td{padding:8px 10px;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+.cmd-table td input{border:1px solid var(--gray-200);border-radius:4px;padding:5px 8px;font-size:12px;width:100%}
+.cmd-table td input:focus{border-color:var(--green-mid);outline:none}
+.btn-add-row{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--green-mid);background:var(--green-light);border:1px solid var(--green-border);border-radius:6px;padding:5px 12px;cursor:pointer;font-family:inherit}
+.btn-add-row:hover{background:var(--green-mid);color:white}
+.btn-del-row{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;padding:0 4px;transition:color 0.1s}
+.btn-del-row:hover{color:var(--red)}
+
+/* SIGN */
+.sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1rem}
+.sign-box{border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.25rem}
+.sign-box h4{font-size:13px;font-weight:600;color:var(--gray-800);margin-bottom:12px}
+.sign-zone{margin-top:10px;height:80px;border:1.5px dashed var(--gray-200);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--gray-400);font-size:12px;gap:6px}
+
+/* RECAP */
+.recap-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px}
+.recap-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--gray-100)}
+.recap-key{color:var(--gray-400);min-width:110px;font-size:12px}
+.recap-val{color:var(--gray-800);font-weight:500}
+
+/* BOXES */
+.info-box{background:var(--green-light);border:1px solid var(--green-border);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--green);display:flex;align-items:flex-start;gap:8px;margin-top:1rem}
+.warn-box{background:#FDF6E3;border:1px solid #F0D060;border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:#7A5C00;display:flex;align-items:flex-start;gap:8px;margin-top:0.75rem}
+.total-box{background:var(--green);color:white;border-radius:var(--radius-sm);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.total-box span{font-size:13px;opacity:0.85}
+.total-box strong{font-size:18px;font-weight:600}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;border:1px solid transparent;transition:all 0.15s}
+.btn-primary{background:var(--green);color:white;border-color:var(--green)}
+.btn-primary:hover{background:var(--green-mid)}
+.btn-outline{background:white;color:var(--gray-600);border-color:var(--gray-200)}
+.btn-outline:hover{background:var(--gray-50);color:var(--gray-800)}
+.btn-success{background:var(--green);color:white}
+.btn-success:hover{background:var(--green-mid)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+
+/* NAV */
+.nav-bar{display:flex;justify-content:space-between;align-items:center;padding-top:0.5rem}
+.step-dots{display:flex;gap:6px;align-items:center}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--gray-200);transition:all 0.2s;cursor:pointer}
+.step-dot.active{background:var(--green-mid);width:20px;border-radius:4px}
+.step-dot.done{background:var(--green)}
+
+/* SUCCESS */
+.success-screen{display:none;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;text-align:center}
+.success-screen.show{display:flex}
+.success-icon{width:72px;height:72px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:1.5rem}
+
+/* VILLE BADGE */
+.ville-badge{display:inline-block;background:var(--gold-light);color:var(--gold);border:1px solid #F0D060;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600;margin-right:5px;margin-bottom:4px;cursor:pointer;transition:all 0.15s}
+.ville-badge.selected{background:var(--gold);color:white}
+
+/* STATUT SELECT */
+.statut-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.statut-actif{background:var(--green-light);color:var(--green)}
+.statut-prospect{background:#EEF;color:#44F}
+.statut-inactif{background:var(--gray-100);color:var(--gray-600)}
+
+@media(max-width:680px){
+  .sidebar{display:none}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .sign-grid{grid-template-columns:1fr}
+  .recap-grid{grid-template-columns:1fr}
+  .main{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-logo">📦</div>
+    <div>
+      <div class="brand-name">Marchica Emballage</div>
+      <div class="brand-tagline">Solutions d'emballage alimentaire — SARL · Rabat</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge-sarl">+212 528 83 47 66</span>
+    <span class="badge-confidential">Dossier Client</span>
+  </div>
+</header>
+
+<div class="app-body">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <span class="sidebar-label">Sections</span>
+    <div class="nav-item active" data-tab="0" onclick="goTo(0)"><span class="nav-num">1</span> Identification</div>
+    <div class="nav-item" data-tab="1" onclick="goTo(1)"><span class="nav-num">2</span> Coordonnées</div>
+    <div class="nav-item" data-tab="2" onclick="goTo(2)"><span class="nav-num">3</span> Activité Client</div>
+    <div class="nav-item" data-tab="3" onclick="goTo(3)"><span class="nav-num">4</span> Produits & Commande</div>
+    <div class="nav-item" data-tab="4" onclick="goTo(4)"><span class="nav-num">5</span> Livraison</div>
+    <div class="nav-item" data-tab="5" onclick="goTo(5)"><span class="nav-num">6</span> Conditions & Contrat</div>
+    <div class="nav-item" data-tab="6" onclick="goTo(6)"><span class="nav-num">7</span> Documents</div>
+    <div class="nav-item" data-tab="7" onclick="goTo(7)"><span class="nav-num">8</span> Notes Commerciales</div>
+    <div class="nav-item" data-tab="8" onclick="goTo(8)"><span class="nav-num">9</span> Validation</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-info">
+      <strong>📦 Marchica Emballage</strong>
+      <p>SARL · Capital 100 000 DH<br>Fondée Mars 2021<br>Distribution nationale<br>Agadir · Casa · Rabat · Tanger<br>Marrakech · Laâyoune · Dakhla</p>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Progression</span><span id="prog-pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- META BAR -->
+<div class="meta-bar" id="meta-bar">
+  <div class="field"><label>N° Dossier</label><input type="text" id="numDossier" placeholder="ME-2026-001" oninput="updateProgress()"></div>
+  <div class="field"><label>Date d'ouverture</label><input type="date" id="dateOuv" oninput="updateProgress()"></div>
+  <div class="field"><label>Commercial responsable</label><input type="text" id="commercial" placeholder="Nom du commercial" oninput="updateProgress()"></div>
+  <div class="field"><label>Statut</label>
+    <select id="statut">
+      <option value="Prospect">Prospect</option>
+      <option value="Actif">Client Actif</option>
+      <option value="Inactif">Inactif</option>
+      <option value="VIP">Client VIP</option>
+    </select>
+  </div>
+</div>
+
+<!-- ═══ SECTION 1 : IDENTIFICATION ═══ -->
+<div class="section active" id="sec-0">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🏢</div>
+      <div><div class="card-title">Identification du Client</div><div class="card-sub">Entreprise ou particulier</div></div>
+    </div>
+    <div class="field" style="margin-bottom:14px">
+      <label>Type de client</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="typeClient" value="Entreprise" checked onchange="toggleTypeClient()"> 🏢 Entreprise / Société</label>
+        <label class="radio-option"><input type="radio" name="typeClient" value="Particulier" onchange="toggleTypeClient()"> 👤 Particulier</label>
+      </div>
+    </div>
+
+    <!-- ENTREPRISE -->
+    <div id="bloc-entreprise">
+      <div class="grid-2">
+        <div class="field"><label>Raison sociale <span class="req">*</span></label><input type="text" id="raisonSociale" placeholder="Ex : Restaurant Al Baraka SARL" oninput="updateProgress()"></div>
+        <div class="field"><label>Forme juridique</label>
+          <select id="formeJuridique">
+            <option>SARL</option><option>SA</option><option>SARL-AU</option><option>Auto-entrepreneur</option><option>Autre</option>
+          </select>
+        </div>
+        <div class="field"><label>ICE</label><input type="text" id="ice" placeholder="Identifiant Commun Entreprise"></div>
+        <div class="field"><label>Registre de commerce</label><input type="text" id="rc" placeholder="N° RC"></div>
+        <div class="field"><label>IF (Identifiant Fiscal)</label><input type="text" id="if_" placeholder="N° IF"></div>
+        <div class="field"><label>CNSS</label><input type="text" id="cnss" placeholder="N° CNSS"></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="grid-2">
+        <div class="field"><label>Nom du responsable <span class="req">*</span></label><input type="text" id="nomResp" placeholder="Gérant / Directeur" oninput="updateProgress()"></div>
+        <div class="field"><label>Fonction</label><input type="text" id="fonctionResp" placeholder="Ex : Gérant, DG, Acheteur..."></div>
+      </div>
+    </div>
+
+    <!-- PARTICULIER -->
+    <div id="bloc-particulier" style="display:none">
+      <div class="grid-2">
+        <div class="field"><label>Nom <span class="req">*</span></label><input type="text" id="nomPart" placeholder="Nom de famille" oninput="updateProgress()"></div>
+        <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" id="prenomPart" placeholder="Prénom" oninput="updateProgress()"></div>
+        <div class="field"><label>N° CIN</label><input type="text" id="cinPart" placeholder="AB123456"></div>
+        <div class="field"><label>Date de naissance</label><input type="date" id="dobPart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 2 : COORDONNÉES ═══ -->
+<div class="section" id="sec-1">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📍</div>
+      <div><div class="card-title">Coordonnées & Localisation</div><div class="card-sub">Adresse, contacts et ville de livraison</div></div>
+    </div>
+    <div class="grid-1"><div class="field"><label>Adresse complète <span class="req">*</span></label><input type="text" id="adresse" placeholder="N°, Rue, Quartier" oninput="updateProgress()"></div></div>
+    <div class="spacer"></div>
+    <div class="grid-3">
+      <div class="field"><label>Ville</label><input type="text" id="ville" placeholder="Ex : Agadir"></div>
+      <div class="field"><label>Code postal</label><input type="text" id="cp" placeholder="80000"></div>
+      <div class="field"><label>Région</label><input type="text" id="region" placeholder="Ex : Souss-Massa"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="grid-2">
+      <div class="field"><label>Téléphone principal <span class="req">*</span></label><input type="tel" id="tel1" placeholder="+212 6XX XXX XXX" oninput="updateProgress()"></div>
+      <div class="field"><label>Téléphone secondaire</label><input type="tel" id="tel2" placeholder="+212 5XX XXX XXX"></div>
+      <div class="field"><label>E-mail professionnel <span class="req">*</span></label><input type="email" id="email" placeholder="contact@entreprise.com" oninput="updateProgress()"></div>
+      <div class="field"><label>WhatsApp</label><input type="tel" id="whatsapp" placeholder="+212 6XX XXX XXX"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="field">
+      <label>Ville(s) de livraison souhaitée(s)</label>
+      <div style="margin-top:6px">
+        <span class="ville-badge" onclick="toggleVille(this)">Agadir</span>
+        <span class="ville-badge" onclick="toggleVille(this)">Casablanca</span>
+        <span class="ville-badge" onclick="toggleVille(this)">Rabat</span>
+        <span class="ville-badge" onclick="toggleVille(this)">Marrakech</span>
+        <span class="ville-badge" onclick="toggleVille(this)">Tanger</span>
+        <span class="ville-badge" onclick="toggleVille(this)">Laâyoune</span>
+        <span class="ville-badge" onclick="toggleVille(this)">Dakhla</span>
+        <span class="ville-badge" onclick="toggleVille(this)">Autre</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 3 : ACTIVITÉ CLIENT ═══ -->
+<div class="section" id="sec-2">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🍽️</div>
+      <div><div class="card-title">Activité & Secteur du Client</div><div class="card-sub">Profil d'utilisation des emballages</div></div>
+    </div>
+    <div class="field" style="margin-bottom:14px">
+      <label>Secteur d'activité <span class="req">*</span></label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="secteur" value="Restaurant"> 🍽️ Restaurant</label>
+        <label class="radio-option"><input type="radio" name="secteur" value="Fast-food"> 🍔 Fast-food</label>
+        <label class="radio-option"><input type="radio" name="secteur" value="Boulangerie"> 🥐 Boulangerie / Pâtisserie</label>
+        <label class="radio-option"><input type="radio" name="secteur" value="Traiteur"> 👨‍🍳 Traiteur</label>
+        <label class="radio-option"><input type="radio" name="secteur" value="Hôtel"> 🏨 Hôtel</label>
+        <label class="radio-option"><input type="radio" name="secteur" value="Agroalimentaire"> 🏭 Industrie Agroalimentaire</label>
+        <label class="radio-option"><input type="radio" name="secteur" value="Grande distribution"> 🛒 Grande Distribution</label>
+        <label class="radio-option"><input type="radio" name="secteur" value="Autre"> ➕ Autre</label>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Nombre de points de vente / sites</label><input type="number" id="nbSites" placeholder="Ex : 3" min="1"></div>
+      <div class="field"><label>Effectif approximatif</label>
+        <select id="effectif">
+          <option>1 à 5 personnes</option>
+          <option>6 à 20 personnes</option>
+          <option>21 à 50 personnes</option>
+          <option>Plus de 50 personnes</option>
+        </select>
+      </div>
+      <div class="field"><label>Volume d'achat mensuel estimé (DH)</label><input type="number" id="volumeAchat" placeholder="Ex : 5000"></div>
+      <div class="field"><label>Fréquence de commande</label>
+        <select id="freqCommande">
+          <option>Hebdomadaire</option>
+          <option>Bimensuelle</option>
+          <option>Mensuelle</option>
+          <option>Trimestrielle</option>
+          <option>Ponctuelle</option>
+        </select>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="field"><label>Comment a-t-il connu Marchica Emballage ?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="source" value="Recommandation"> 🤝 Recommandation</label>
+        <label class="radio-option"><input type="radio" name="source" value="Réseaux sociaux"> 📱 Réseaux sociaux</label>
+        <label class="radio-option"><input type="radio" name="source" value="Site web"> 🌐 Site web</label>
+        <label class="radio-option"><input type="radio" name="source" value="Commercial terrain"> 🚗 Commercial terrain</label>
+        <label class="radio-option"><input type="radio" name="source" value="Salon / Foire"> 🎪 Salon / Foire</label>
+        <label class="radio-option"><input type="radio" name="source" value="Autre"> ➕ Autre</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 4 : PRODUITS & COMMANDE ═══ -->
+<div class="section" id="sec-3">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🛒</div>
+      <div><div class="card-title">Produits Commandés</div><div class="card-sub">Catalogue Marchica Emballage</div></div>
+    </div>
+    <div class="field" style="margin-bottom:10px"><label>Catégories de produits souhaitées</label></div>
+    <div class="produits-grid">
+      <div class="produit-chip" data-prod="Barquettes aluminium" onclick="toggleChip(this)"><span class="chip-icon">🥡</span> Barquettes aluminium</div>
+      <div class="produit-chip" data-prod="Barquettes plastique" onclick="toggleChip(this)"><span class="chip-icon">📦</span> Barquettes plastique</div>
+      <div class="produit-chip" data-prod="Boîtes à sushi" onclick="toggleChip(this)"><span class="chip-icon">🍱</span> Boîtes à sushi</div>
+      <div class="produit-chip" data-prod="Cartons alimentaires" onclick="toggleChip(this)"><span class="chip-icon">📫</span> Cartons alimentaires</div>
+      <div class="produit-chip" data-prod="Sacs alimentaires" onclick="toggleChip(this)"><span class="chip-icon">🛍️</span> Sacs alimentaires</div>
+      <div class="produit-chip" data-prod="Emballages jetables" onclick="toggleChip(this)"><span class="chip-icon">🥤</span> Emballages jetables</div>
+      <div class="produit-chip" data-prod="Produits hygiène" onclick="toggleChip(this)"><span class="chip-icon">🧴</span> Produits d'hygiène</div>
+      <div class="produit-chip" data-prod="Emballages écologiques" onclick="toggleChip(this)"><span class="chip-icon">♻️</span> Emballages écologiques</div>
+      <div class="produit-chip" data-prod="Articles conditionnement" onclick="toggleChip(this)"><span class="chip-icon">🏷️</span> Articles conditionnement</div>
+      <div class="produit-chip" data-prod="Autre produit" onclick="toggleChip(this)"><span class="chip-icon">➕</span> Autre produit</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="field"><label>Détail de la commande initiale</label></div>
+    <div style="overflow-x:auto">
+      <table class="cmd-table">
+        <thead>
+          <tr>
+            <th style="width:35%">Désignation du produit</th>
+            <th style="width:15%">Référence</th>
+            <th style="width:15%">Quantité</th>
+            <th style="width:15%">Unité</th>
+            <th style="width:15%">Prix unit. (DH)</th>
+            <th style="width:5%"></th>
+          </tr>
+        </thead>
+        <tbody id="cmd-tbody">
+          <tr>
+            <td><input type="text" placeholder="Ex : Barquette alu 2500ml"></td>
+            <td><input type="text" placeholder="REF-001"></td>
+            <td><input type="number" placeholder="100" oninput="calcTotal()"></td>
+            <td><select style="font-size:12px;padding:5px 6px"><option>Unité</option><option>Carton</option><option>Palette</option><option>Kg</option></select></td>
+            <td><input type="number" placeholder="0.00" oninput="calcTotal()"></td>
+            <td><button class="btn-del-row" onclick="delRow(this)">✕</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn-add-row" onclick="addRow()">+ Ajouter une ligne</button>
+    <div class="total-box" id="total-box">
+      <span>Total estimé de la commande</span>
+      <strong id="total-val">0,00 DH</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 5 : LIVRAISON ═══ -->
+<div class="section" id="sec-4">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🚚</div>
+      <div><div class="card-title">Livraison & Logistique</div><div class="card-sub">Modalités de livraison nationale</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Adresse de livraison</label><input type="text" id="adrLivraison" placeholder="Si différente de l'adresse principale"></div>
+      <div class="field"><label>Ville de livraison</label>
+        <select id="villeLivraison">
+          <option>Agadir</option><option>Casablanca</option><option>Rabat</option><option>Marrakech</option><option>Tanger</option><option>Laâyoune</option><option>Dakhla</option><option>Autre</option>
+        </select>
+      </div>
+      <div class="field"><label>Date de livraison souhaitée</label><input type="date" id="dateLivraison"></div>
+      <div class="field"><label>Créneau horaire préféré</label>
+        <select id="creneau">
+          <option>Matin (8h-12h)</option><option>Après-midi (14h-18h)</option><option>Toute la journée</option><option>À définir</option>
+        </select>
+      </div>
+      <div class="field"><label>Mode de livraison</label>
+        <select id="modeLivraison">
+          <option>Livraison à domicile Marchica</option>
+          <option>Enlèvement en entrepôt</option>
+          <option>Transporteur tiers</option>
+        </select>
+      </div>
+      <div class="field"><label>Contact réception sur site</label><input type="text" id="contactReception" placeholder="Nom + téléphone"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="field"><label>Instructions spéciales de livraison</label>
+      <textarea id="instructionsLiv" rows="3" placeholder="Accès, horaires spéciaux, conditions de stockage..."></textarea>
+    </div>
+    <div class="field" style="margin-top:14px"><label>Besoin de stockage / entrepôt Marchica ?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="stockage" value="Non"> Non</label>
+        <label class="radio-option"><input type="radio" name="stockage" value="Oui"> Oui — Géré par Marchica</label>
+        <label class="radio-option"><input type="radio" name="stockage" value="À discuter"> À discuter</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 6 : CONDITIONS & CONTRAT ═══ -->
+<div class="section" id="sec-5">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📋</div>
+      <div><div class="card-title">Conditions Commerciales & Contrat</div><div class="card-sub">Tarification, paiement et engagements</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Mode de paiement</label>
+        <select id="modePaiement">
+          <option>Espèces</option><option>Virement bancaire</option><option>Chèque</option><option>Traite / Effet</option><option>Mobile payment</option>
+        </select>
+      </div>
+      <div class="field"><label>Délai de paiement</label>
+        <select id="delaiPaiement">
+          <option>Comptant à la livraison</option><option>15 jours</option><option>30 jours</option><option>45 jours</option><option>60 jours</option><option>À négocier</option>
+        </select>
+      </div>
+      <div class="field"><label>Remise accordée (%)</label><input type="number" id="remise" placeholder="0" min="0" max="100"></div>
+      <div class="field"><label>Plafond de crédit accordé (DH)</label><input type="number" id="plafondCredit" placeholder="0"></div>
+      <div class="field"><label>Type de contrat</label>
+        <select id="typeContrat">
+          <option>Vente ponctuelle</option><option>Contrat annuel</option><option>Contrat cadre</option><option>Accord de partenariat</option>
+        </select>
+      </div>
+      <div class="field"><label>Durée du contrat</label>
+        <select id="dureeContrat">
+          <option>Sans engagement</option><option>6 mois</option><option>1 an</option><option>2 ans</option><option>3 ans</option>
+        </select>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="field"><label>Services complémentaires souscrits</label></div>
+    <div class="services-grid">
+      <div class="service-chip" onclick="this.classList.toggle('selected')">🧭 Conseil en emballage</div>
+      <div class="service-chip" onclick="this.classList.toggle('selected')">📦 Gestion des stocks</div>
+      <div class="service-chip" onclick="this.classList.toggle('selected')">🚚 Livraison rapide prioritaire</div>
+      <div class="service-chip" onclick="this.classList.toggle('selected')">🎓 Formation utilisation</div>
+      <div class="service-chip" onclick="this.classList.toggle('selected')">♻️ Solutions écologiques</div>
+      <div class="service-chip" onclick="this.classList.toggle('selected')">🏷️ Emballage personnalisé</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="field"><label>Conditions particulières / Notes contrat</label>
+      <textarea id="conditionsParticulieres" rows="3" placeholder="Clauses spéciales, remises exceptionnelles, accords particuliers..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 7 : DOCUMENTS ═══ -->
+<div class="section" id="sec-6">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📁</div>
+      <div><div class="card-title">Pièces Justificatives</div><div class="card-sub">Documents administratifs et commerciaux</div></div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:50px">Reçu</th>
+            <th>Document</th>
+            <th style="width:145px">Date réception</th>
+            <th>Observations</th>
+          </tr>
+        </thead>
+        <tbody id="docs-tbody"></tbody>
+      </table>
+    </div>
+    <div id="docs-count" style="margin-top:10px;display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 12px;border-radius:20px;background:var(--green-light);color:var(--green);font-weight:600">
+      ✓ 0 / 9 documents reçus
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 8 : NOTES ═══ -->
+<div class="section" id="sec-7">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📝</div>
+      <div><div class="card-title">Notes Commerciales Internes</div><div class="card-sub">Suivi, historique et observations</div></div>
+    </div>
+    <div class="grid-2" style="margin-bottom:14px">
+      <div class="field"><label>Potentiel commercial</label>
+        <select id="potentiel">
+          <option>Standard</option><option>Fort potentiel</option><option>Client stratégique</option><option>À surveiller</option>
+        </select>
+      </div>
+      <div class="field"><label>Priorité de suivi</label>
+        <select id="priorite">
+          <option>Normale</option><option>Haute</option><option>Urgente</option><option>Faible</option>
+        </select>
+      </div>
+      <div class="field"><label>Prochaine relance</label><input type="date" id="prochaineRelance"></div>
+      <div class="field"><label>Responsable suivi</label><input type="text" id="responsableSuivi" placeholder="Commercial assigné"></div>
+    </div>
+    <div class="field"><label>Observations et historique des échanges</label>
+      <textarea id="notes" rows="8" placeholder="Historique des visites, appels, remarques du client, points d'attention, opportunités détectées...&#10;&#10;Ces notes sont strictement confidentielles — usage interne Marchica Emballage uniquement."></textarea>
+    </div>
+    <div class="warn-box">🔒 Ces informations sont confidentielles et réservées à l'usage interne de Marchica Emballage.</div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 9 : VALIDATION ═══ -->
+<div class="section" id="sec-8">
+  <div class="card" id="card-validation">
+    <div class="card-header">
+      <div class="card-icon">✍️</div>
+      <div><div class="card-title">Signatures & Validation</div><div class="card-sub">Confirmation d'ouverture du dossier</div></div>
+    </div>
+    <div class="sign-grid">
+      <div class="sign-box">
+        <h4>✍️ Signature du Client</h4>
+        <div class="field"><label>Nom complet</label><input type="text" id="sigClient"></div>
+        <div class="field" style="margin-top:10px"><label>Date</label><input type="date" id="dateSigClient"></div>
+        <div class="sign-zone">✍️ Signature manuscrite</div>
+      </div>
+      <div class="sign-box">
+        <h4>🏢 Visa Marchica Emballage</h4>
+        <div class="field"><label>Commercial / Responsable</label><input type="text" id="sigMarchica"></div>
+        <div class="field" style="margin-top:10px"><label>Date</label><input type="date" id="dateSigMarchica"></div>
+        <div class="sign-zone">🏢 Cachet & Signature officielle</div>
+      </div>
+    </div>
+    <div class="card" style="background:var(--gray-50);box-shadow:none;margin-bottom:0;margin-top:0">
+      <div style="font-size:13px;font-weight:600;color:var(--gray-800);margin-bottom:12px">📋 Récapitulatif du dossier</div>
+      <div class="recap-grid" id="recap-grid"></div>
+    </div>
+    <div class="info-box">
+      📦 Marchica Emballage SARL · Capital 100 000 DH · Rabat, Hay Riad, Avenue Noubalia Lot 4 Secteur 17 Bloc 1 · Tél : +212 528 83 47 66 · contact@marchicaemballages.com · <a href="https://marchicaemballages.com" target="_blank" style="color:var(--green)">marchicaemballages.com</a>
+    </div>
+  </div>
+
+  <div class="success-screen card" id="success-screen">
+    <div class="success-icon">📦</div>
+    <h2 style="font-size:22px;font-weight:600;margin-bottom:8px;color:var(--green)">Dossier client enregistré</h2>
+    <p id="success-name" style="color:var(--gray-400);margin-bottom:4px;font-size:15px"></p>
+    <p id="success-num" style="color:var(--gray-400);margin-bottom:6px"></p>
+    <p style="color:var(--gray-400);font-size:13px;margin-bottom:1.5rem">Marchica Emballage · <a href="https://marchicaemballages.com" target="_blank" style="color:var(--green)">marchicaemballages.com</a></p>
+    <button class="btn btn-primary" onclick="resetForm()">➕ Nouveau dossier client</button>
+  </div>
+</div>
+
+<!-- NAV BAR -->
+<div class="nav-bar" id="nav-bar">
+  <button class="btn btn-outline" id="btn-prev" onclick="prevTab()" disabled>← Précédent</button>
+  <div class="step-dots" id="step-dots"></div>
+  <button class="btn btn-primary" id="btn-next" onclick="nextTab()">Suivant →</button>
+</div>
+
+</main>
+</div>
+
+<script>
+const TOTAL=9;
+let currentTab=0;
+
+const DOCS=[
+  {key:"cin",   label:"CIN / Passeport du responsable"},
+  {key:"rc",    label:"Registre de commerce (RC)"},
+  {key:"if_",   label:"Identifiant fiscal (IF)"},
+  {key:"ice",   label:"ICE (Identifiant Commun Entreprise)"},
+  {key:"rib",   label:"RIB bancaire"},
+  {key:"bon",   label:"Bon de commande signé"},
+  {key:"devis", label:"Devis accepté / signé"},
+  {key:"contrat",label:"Contrat commercial signé"},
+  {key:"autre", label:"Autre document"},
+];
+
+// Build docs table
+const tbody=document.getElementById('docs-tbody');
+DOCS.forEach((d,i)=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td style="text-align:center"><input type="checkbox" id="doc-${d.key}" onchange="updateDocsCount()"></td>
+    <td id="dlbl-${d.key}">${d.label}</td>
+    <td><input type="date" id="ddate-${d.key}" style="width:135px;font-size:12px"></td>
+    <td><input type="text" id="dobs-${d.key}" placeholder="Observations..." style="font-size:12px"></td>`;
+  tbody.appendChild(tr);
+});
+
+// Build step dots
+const dotsC=document.getElementById('step-dots');
+for(let i=0;i<TOTAL;i++){
+  const d=document.createElement('div');
+  d.className='step-dot'+(i===0?' active':'');
+  d.id='dot-'+i;
+  d.onclick=()=>goTo(i);
+  dotsC.appendChild(d);
+}
+
+function goTo(idx){
+  document.getElementById('sec-'+currentTab).classList.remove('active');
+  document.querySelector('[data-tab="'+currentTab+'"]').classList.remove('active');
+  const pdot=document.getElementById('dot-'+currentTab);
+  pdot.classList.remove('active');
+  pdot.classList.add('done');
+  currentTab=idx;
+  document.getElementById('sec-'+currentTab).classList.add('active');
+  document.querySelector('[data-tab="'+currentTab+'"]').classList.add('active');
+  const cdot=document.getElementById('dot-'+currentTab);
+  cdot.classList.remove('done');
+  cdot.classList.add('active');
+  document.getElementById('btn-prev').disabled=currentTab===0;
+  const btnN=document.getElementById('btn-next');
+  if(currentTab===TOTAL-1){
+    btnN.textContent='✅ Valider le dossier';
+    btnN.className='btn btn-success';
+    btnN.onclick=validateForm;
+    buildRecap();
+  } else {
+    btnN.textContent='Suivant →';
+    btnN.className='btn btn-primary';
+    btnN.onclick=nextTab;
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateProgress();
+}
+function nextTab(){if(currentTab<TOTAL-1)goTo(currentTab+1)}
+function prevTab(){if(currentTab>0)goTo(currentTab-1)}
+
+function toggleTypeClient(){
+  const v=document.querySelector('input[name="typeClient"]:checked').value;
+  document.getElementById('bloc-entreprise').style.display=v==='Entreprise'?'block':'none';
+  document.getElementById('bloc-particulier').style.display=v==='Particulier'?'block':'none';
+  updateProgress();
+}
+function toggleVille(el){el.classList.toggle('selected')}
+function toggleChip(el){el.classList.toggle('selected')}
+function updateDocsCount(){
+  const ok=DOCS.filter(d=>document.getElementById('doc-'+d.key).checked).length;
+  document.getElementById('docs-count').textContent='✓ '+ok+' / '+DOCS.length+' documents reçus';
+}
+function updateProgress(){
+  const type=document.querySelector('input[name="typeClient"]:checked');
+  const isEntr=!type||type.value==='Entreprise';
+  const fields=[
+    isEntr?document.getElementById('raisonSociale').value.trim():document.getElementById('nomPart').value.trim(),
+    document.getElementById('adresse')?document.getElementById('adresse').value.trim():'',
+    document.getElementById('tel1')?document.getElementById('tel1').value.trim():'',
+    document.getElementById('email')?document.getElementById('email').value.trim():'',
+    document.querySelectorAll('.produit-chip.selected').length>0?'ok':'',
+    document.getElementById('commercial')?document.getElementById('commercial').value.trim():'',
+  ];
+  const filled=fields.filter(Boolean).length;
+  const pct=Math.round(filled/fields.length*100);
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+function addRow(){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input type="text" placeholder="Désignation produit"></td>
+    <td><input type="text" placeholder="REF-XXX"></td>
+    <td><input type="number" placeholder="0" oninput="calcTotal()"></td>
+    <td><select style="font-size:12px;padding:5px 6px"><option>Unité</option><option>Carton</option><option>Palette</option><option>Kg</option></select></td>
+    <td><input type="number" placeholder="0.00" oninput="calcTotal()"></td>
+    <td><button class="btn-del-row" onclick="delRow(this)">✕</button></td>`;
+  document.getElementById('cmd-tbody').appendChild(tr);
+}
+function delRow(btn){
+  const row=btn.closest('tr');
+  if(document.getElementById('cmd-tbody').rows.length>1){row.remove();calcTotal();}
+}
+function calcTotal(){
+  let total=0;
+  document.querySelectorAll('#cmd-tbody tr').forEach(tr=>{
+    const inputs=tr.querySelectorAll('input[type=number]');
+    const qty=parseFloat(inputs[0]?.value)||0;
+    const prix=parseFloat(inputs[1]?.value)||0;
+    total+=qty*prix;
+  });
+  document.getElementById('total-val').textContent=total.toLocaleString('fr-MA',{minimumFractionDigits:2,maximumFractionDigits:2})+' DH';
+}
+
+function buildRecap(){
+  const type=document.querySelector('input[name="typeClient"]:checked');
+  const isEntr=!type||type.value==='Entreprise';
+  const nom=isEntr?(document.getElementById('raisonSociale').value||'—'):(document.getElementById('nomPart').value+' '+document.getElementById('prenomPart').value).trim()||'—';
+  const secteurEl=document.querySelector('input[name="secteur"]:checked');
+  const prods=[...document.querySelectorAll('.produit-chip.selected')].map(e=>e.dataset.prod).join(', ')||'—';
+  const docsOk=DOCS.filter(d=>document.getElementById('doc-'+d.key).checked).length;
+  const rows=[
+    ['Client',nom],['N° Dossier',document.getElementById('numDossier').value||'—'],
+    ['Téléphone',document.getElementById('tel1').value||'—'],['E-mail',document.getElementById('email').value||'—'],
+    ['Secteur',secteurEl?secteurEl.value:'—'],['Commercial',document.getElementById('commercial').value||'—'],
+    ['Produits',prods],['Documents',docsOk+'/'+DOCS.length+' reçus'],
+    ['Paiement',document.getElementById('modePaiement').value],['Total estimé',document.getElementById('total-val').textContent],
+  ];
+  document.getElementById('recap-grid').innerHTML=rows.map(([k,v])=>
+    `<div class="recap-row"><span class="recap-key">${k}</span><span class="recap-val">${v}</span></div>`
+  ).join('');
+}
+
+function validateForm(){
+  const type=document.querySelector('input[name="typeClient"]:checked');
+  const isEntr=!type||type.value==='Entreprise';
+  const nom=isEntr?document.getElementById('raisonSociale').value.trim():document.getElementById('nomPart').value.trim();
+  if(!nom){alert('Veuillez renseigner le nom / la raison sociale du client.');goTo(0);return;}
+  document.getElementById('meta-bar').style.display='none';
+  document.getElementById('nav-bar').style.display='none';
+  document.getElementById('card-validation').style.display='none';
+  const ss=document.getElementById('success-screen');
+  ss.classList.add('show');
+  document.getElementById('success-name').textContent='Client : '+nom;
+  document.getElementById('success-num').textContent='N° Dossier : '+(document.getElementById('numDossier').value||'—');
+}
+
+function resetForm(){
+  document.querySelectorAll('input:not([type=radio]):not([type=checkbox])').forEach(i=>i.value='');
+  document.querySelectorAll('textarea').forEach(t=>t.value='');
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  document.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false);
+  document.querySelectorAll('.produit-chip,.service-chip,.ville-badge').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('meta-bar').style.display='';
+  document.getElementById('nav-bar').style.display='';
+  document.getElementById('card-validation').style.display='';
+  document.getElementById('success-screen').classList.remove('show');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active','done'));
+  document.querySelectorAll('.step-dot').forEach((d,i)=>{d.className='step-dot'+(i===0?' active':'');});
+  currentTab=0;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-0').classList.add('active');
+  document.querySelector('[data-tab="0"]').classList.add('active');
+  document.getElementById('btn-prev').disabled=true;
+  const btnN=document.getElementById('btn-next');
+  btnN.textContent='Suivant →';btnN.className='btn btn-primary';btnN.onclick=nextTab;
+  updateDocsCount();updateProgress();calcTotal();
+}
+
+updateProgress();
+</script>
+</body>
+</html>
